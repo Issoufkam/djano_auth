@@ -5,38 +5,49 @@
 <!--end carousel-->
 
   <!--start cards-->
-  <div class="container mt-3">
-    <div class="row shadow">
-        <div class="col-lg-4">
-            <div class="card shadow" style="width: 18rem;">
-                <img class="card-img-top" src="https://www.s-i-f.ch/wp-content/uploads/2020/04/villa-luxe.jpg" alt="Card image cap">
+  <div class="container-fluid mt-3">
+    <div class="row">
+      {% for produit in product_objects %}
+        <div class="col-lg-3">
+            <div class="card shadow mb-4">
+                <img class="img-fluid img-reponsive" style="max-width: 400px; height: 250px" src="{{ produit.image }}" alt="Card image cap">
                 <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <h5 class="card-title">{{ produit.title }}</h5>
+                  <p class="card-text">{{produit.price}}</p>
+                  <p class="card-text">{{produit.description | truncatechars:35}}</p>
+                  <a href="{{ produit.id }}" class="btn btn-primary">Show</a>
+                 <a href="#" id="{{ produit.id}}" class="btn recup btn-secondary">Buy</a> 
+                  <!--  <button id="{{ produit.id}}"  type="submit" class="btn recup btn-secondary">Buy</button> -->
+                   <!-- recup: la variable qui nous permettra de recuperer les click -->
                 </div>
               </div>
         </div>
-        <div class="col-lg-4">
-            <div class="card shadow" style="width: 18rem;">
-                <img class="card-img-top" src="https://www.s-i-f.ch/wp-content/uploads/2020/04/villa-luxe.jpg" alt="Card image cap">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-              </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card shadow" style="width: 18rem;">
-                <img class="card-img-top" src="https://www.s-i-f.ch/wp-content/uploads/2020/04/villa-luxe.jpg" alt="Card image cap">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-              </div>
-        </div>
+      {% endfor %}
     </div>
   </div>
+{% endblock %}
+
+{% block js %}
+
+<script type="text/javascript">
+  console.log('Juste pour tester')
+  if (localStorage.getItem('panier') == null) {
+    var panier = {};
+  }
+  else{
+    panier = JSON.parse(localStorage.getItem('panier'));
+  }
+  $(document).on('click', '.recup', function() {
+    console.log('acheter');
+    var item_id = this.id.toString();
+    if (panier[item_id] != undefined) {
+      panier[item_id] = panier[item_id] + 1;
+    }else{
+      panier[item_id] = 1;
+    }
+    localStorage.setItem('panier', JSON.stringify(panier))
+    document.getElementById("cart").innerHTML = "Panier("+ Object.keys(panier).length+")";
+  })
+</script>
+
 {% endblock %}

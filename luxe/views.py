@@ -8,10 +8,19 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.mail import send_mail, EmailMessage
 from django.contrib.auth.models import User
+from .models import Product
+from django.core.paginator import Paginator
 # Create your views here.
 
 def home(request):
-    return render(request, 'home.html')
+    product_objects = Product.objects.all() # recuperation de tous les produits dans la base de donnée
+    product_id = request.GET.get('product_id')
+    if product_id != '' and product_id is not None:
+        product_objects = Product.objects.filter(title__icontains=product_id)
+    paginator = Paginator(product_objects, 20)
+    page = request.GET.get('page')
+    product_objects = paginator.get_page(page)
+    return render(request, 'home.html', {'product_objects': product_objects})
 
 
 def registerF(request):
@@ -51,14 +60,14 @@ def registerF(request):
         send_mail(subject, message, from_emil, to_list, fail_silently=False)
 
         # Message de confirmation de la creation de compte
-        current_site = get_current_site # recuperation du lien du site
-        objet = 'Confirmation de creation de compte' # l'Objet de messagerie
-        contenu = render_to_string("email.html", {
-            'name': mon_utilisateur.first_name,
-            'dommaine': current_site,
-            'uid': urlsafe_base64_encode(force_bytes(mon_utilisateur.pk)),
+        #current_site = get_current_site # recuperation du lien du site
+        #objet = 'Confirmation de creation de compte' # l'Objet de messagerie
+        #contenu = render_to_string("email.html", {
+         #   'name': mon_utilisateur.first_name,
+          #  'dommaine': current_site,
+           # 'uid': urlsafe_base64_encode(force_bytes(mon_utilisateur.pk)),
             
-        })
+       # })
         return redirect('login')
         
     return render(request, 'connexion/register.html')
@@ -80,3 +89,12 @@ def loginF(request):
 def logOut(request):
     logout(request)
     return redirect('home')
+
+def detail(request, myid):
+    product_objects = Product.objects.get(id=myid)
+    category = product_objects.category # affichage des articles similaire et qui appartiennent la meme categorie
+    similar_pro = Product.objects.filter(category=category)
+    return render(request, 'product/detail.html', {'produit': product_objects, 'similar_pro': similar_pro})
+
+def panier(request):
+    return render(request, 'product/panier.html')
