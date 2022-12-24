@@ -30,7 +30,7 @@
                 {% for product in similar_pro %}
             
                 <div class="col-md-8 mb-4">
-                    <a href=""><img src="{{product.image}}" class="img-fluid img-reponsive" alt=""></a>
+                    <a href="{{ product.id }}"><img src="{{product.image}}" class="img-fluid img-reponsive" alt=""></a>
                 </div>
                 <div class="col-md-4">
                     {{product.title}} <br>

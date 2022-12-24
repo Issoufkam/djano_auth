@@ -26,8 +26,8 @@ def home(request):
 def registerF(request):
     if request.method == 'POST':
         username = request.POST['username']
-        firstname = request.POST['firstname']
-        lastname = request.POST['lastname']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
         email = request.POST['email']
         password = request.POST['password']
         password1 = request.POST['password1']
@@ -35,7 +35,7 @@ def registerF(request):
             messages.error(request, 'user allexist')
             return redirect('register')
         if User.objects.filter(email=email):
-            messages.error(request, 'Email allexit')
+            messages.error(request, 'Email exist')
             return redirect('register')
         if not username.isalnum():
             messages.error(request, 'username is invalable')
@@ -46,9 +46,7 @@ def registerF(request):
        # if not password.isalnum():
        #     messages.error(request, 'le mot de passe doit etre Alphanumerique')
        #     return redirect('register')
-        mon_utilisateur = User.objects.create_user(username, email, password)
-        mon_utilisateur.first_name = firstname
-        mon_utilisateur.last_name = lastname
+        mon_utilisateur = User.objects.create_user(username=username, email=email, last_name=last_name, first_name=first_name, password=password)
         mon_utilisateur.save()
 
         # Message de bienvenu aux utilisateurs
@@ -98,3 +96,14 @@ def detail(request, myid):
 
 def panier(request):
     return render(request, 'product/panier.html')
+
+#sms function
+#def sms(request):
+ #   message = request.GET['body']
+ #   message_splited = message.split("-")
+  #  title = message_splited[0]
+   # desc = message_splited[1]
+
+#    agri_category = Category.objects.get(id=2)
+ #   product = Product(title=title,category=agri_category)
+  #  return render
