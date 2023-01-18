@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  # db:
+  #   ports:
+  #     - "3306:3306"
+  #   image: mysql
+  #   environment:
+  #     MYSQL_DB: 'aws'
+  #     MYSQL_USER: 'root'
+  #     MYSQL_PASSWORD: 'root'
+  #     MYSQL_PORT: '3306'
+  #     MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+  
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+
+    # depends_on:
+    #   - db

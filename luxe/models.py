@@ -1,6 +1,9 @@
+from itertools import product
+from pyexpat import model
+from tkinter import CASCADE
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from phone_field import PhoneField
+# from django.contrib.auth.models import AbstractUser
+# from phone_field import PhoneField
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -16,7 +19,7 @@ class Product(models.Model):
     description = models.TextField()
     price = models.FloatField()
     category = models.ForeignKey(Category, related_name='categorie', on_delete=models.CASCADE)
-    image = models.CharField(max_length=5000)
+    image1 = models.CharField(max_length=5000)
     date_added = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -25,5 +28,10 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
-class Users(AbstractUser):
-    pass
+class Image(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    images = models.ImageField(upload_to="imgs")
+    
+    def __str__(self):
+        return self.product.title
+    
